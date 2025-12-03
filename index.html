@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ruta de Identidad - Juego Interactivo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tipografías elegantes desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #0b1120;
+      --accent: #e0b95b;
+      --accent-soft: rgba(224, 185, 91, 0.18);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --error: #f97373;
+      --success: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000000 100%);
+      color: var(--text-main);
+      font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app-container {
+      max-width: 900px;
+      width: 100%;
+      background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(15,23,42,1));
+      border-radius: 32px;
+      padding: 32px 26px 28px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(148, 163, 184, 0.18);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 36px 40px 32px;
+      }
+    }
+
+    .glow-orb {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224, 185, 91, 0.22), transparent 60%);
+      top: -80px;
+      right: -40px;
+      pointer-events: none;
+      filter: blur(1px);
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .app-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.9rem;
+      letter-spacing: 0.03em;
+      color: var(--text-main);
+    }
+
+    .app-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 460px;
+    }
+
+    .badge {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 4px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(224, 185, 91, 0.85);
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrapper {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.6);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, var(--accent), #fbbf24);
+      transition: width 0.35s ease;
+    }
+
+    .card {
+      position: relative;
+      border-radius: 24px;
+      padding: 20px 18px 18px;
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.16), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 24px 24px 22px;
+      }
+    }
+
+    .operation-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .question-text {
+      font-family: "Playfair Display", serif;
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .options-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .option {
+      position: relative;
+      border-radius: 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.75);
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.12s ease,
+        box-shadow 0.18s ease;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .option.disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .option:hover {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: var(--accent-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.9);
+    }
+
+    .option.selected {
+      border-color: var(--accent);
+      background: radial-gradient(circle at top left, rgba(224, 185, 91, 0.16), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 0 0 1px rgba(224, 185, 91, 0.18), 0 16px 32px rgba(15, 23, 42, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .option-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .option.selected .option-indicator {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .option-content {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .score-hint {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .primary-button {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    }
+
+    .primary-button:hover {
+      background: rgba(15, 23, 42, 1);
+      border-color: var(--accent);
+      transform: translateY(-0.5px);
+    }
+
+    .result-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .result-level {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .result-score {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+
+    .result-description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .result-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .total-indicator {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="glow-orb"></div>
+
+    <div class="header">
+      <div class="title-row">
+        <div>
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Ruta de identidad
+          </div>
+          <h1 class="app-title">El Árbol de tu Identidad</h1>
+        </div>
+      </div>
+      <p class="app-subtitle">
+        Recorre doce operaciones que exploran tu identidad, tus raíces, tus muros y tu fruto. Elige con honestidad; las respuestas te mostrarán en qué punto del proceso estás.
+      </p>
+    </div>
+
+    <div class="progress-row">
+      <div class="progress-text">
+        <span id="question-counter">Pregunta 1 de 12</span>
+      </div>
+      <div class="progress-bar-wrapper">
+        <div id="progress-bar" class="progress-bar-fill"></div>
+      </div>
+      <div class="total-indicator">
+        Puntos: <span id="score-indicator">0</span>
+      </div>
+    </div>
+
+    <div id="card" class="card fade-in"></div>
+  </div>
+
+  <script>
+    const operaciones = [
+      {
+        id: 1,
+        titulo: "Operación 1 · Árbol de la Vida",
+        subtitulo: "Tu identidad define tu fruto",
+        pregunta:
+          "Cuando piensas en tu identidad y en el fruto que estás dando hoy, ¿qué sientes que es más importante en este momento?",
+        opciones: [
+          {
+            texto:
+              "Profundizar en quién soy realmente y en lo que hay en mi corazón, aunque eso me confronte y me haga replantear cosas.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Organizar mejor mi vida y mis logros para que lo que se vea por fuera hable bien de mí y de lo que estoy construyendo.",
+            puntos: 2
+          },
+          {
+            texto:
+              "No darle tantas vueltas a quién soy; lo importante es ir saliendo adelante con lo que la vida vaya trayendo.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 2,
+        titulo: "Operación 2 · Diagnóstico – Mi Árbol",
+        subtitulo: "Evalúa tu condición real",
+        pregunta:
+          "Si tuvieras que mirar tu “árbol interior” (tu carácter, tus motivaciones, tus frutos), ¿cómo preferirías hacerlo?",
+        opciones: [
+          {
+            texto:
+              "Con sinceridad, pidiendo luz para ver tanto lo que está bien como lo que no está alineado y necesita ajuste.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Enfocándome en aquello que pueda mejorar mi imagen y mi efectividad, sin detenerme demasiado en lo que me incomoda.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Solo revisando lo que no me genere demasiada carga; al fin y al cabo, todos tenemos cosas por mejorar y es normal.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 3,
+        titulo: "Operación 3 · La Semilla",
+        subtitulo: "Encuentra el origen de quién eres",
+        pregunta:
+          "Al explorar el origen de quién eres, ¿qué enfoque te parece más natural?",
+        opciones: [
+          {
+            texto:
+              "Reconocer que hay un diseño intencional sobre mi vida y buscar comprender cómo ese origen puede redefinir mi manera de vivir.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Buscar aquello en mi historia que me haga sentir especial, diferente o con una “marca” que me destaque de los demás.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Interpretar mi origen principalmente como una suma de circunstancias familiares y sociales que simplemente me tocó vivir.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 4,
+        titulo: "Operación 4 · Contaminantes – Falsos Profetas",
+        subtitulo: "Identifica voces que distorsionan tu identidad",
+        pregunta:
+          "Al pensar en las voces que han influido en tu identidad (comentarios, modelos, mensajes), ¿cómo prefieres relacionarte con ellas?",
+        opciones: [
+          {
+            texto:
+              "Revisando qué mensajes he creído, contrastándolos con la verdad de Dios, y haciendo espacio para que sean corregidos.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Identificando qué dijeron o hicieron otros, principalmente para explicar por qué reacciono como reacciono hoy.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Restándole importancia a esas voces; lo pasado ya pasó y lo mejor es no remover demasiado esas cosas.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 5,
+        titulo: "Operación 5 · Muro del Rechazo",
+        subtitulo: "Reconoce sus efectos en espíritu, alma y cuerpo",
+        pregunta:
+          "Ante las experiencias de rechazo que has vivido, ¿qué actitud describiría mejor cómo sueles manejarlas?",
+        opciones: [
+          {
+            texto:
+              "Reconocer que me han marcado más de lo que pensaba y abrirme a procesarlas, aunque sea incómodo.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Utilizarlas como combustible para demostrar que puedo más, que soy fuerte y que nadie volverá a herirme así.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Minimizarlas o hacer como si no me hubieran afectado tanto; hay cosas peores y es mejor seguir adelante sin removerlo.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 6,
+        titulo: "Operación 6 · Muro de la Rebeldía",
+        subtitulo: "Comprende cómo te afecta interiormente",
+        pregunta:
+          "Cuando alguien te confronta o te invita a cambiar algo profundo en tu vida, ¿qué reacción sientes más cercana?",
+        opciones: [
+          {
+            texto:
+              "Escuchar, aunque me cueste, y tomar tiempo para discernir si hay algo que de verdad necesito rendir o ajustar.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Aceptar solo lo que no toque demasiado mis decisiones; prefiero mantener el control de cómo y cuándo cambio.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Pensar que, en general, el problema está más en la forma en que los demás me piden las cosas que en lo que yo hago.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 7,
+        titulo: "Operación 7 · Tierra y Agua – La Plomada",
+        subtitulo: "Conoce el plan de restauración de Dios",
+        pregunta:
+          "Cuando escuchas que Dios tiene un plan de restauración para tu vida, ¿qué enfoque tiendes a tomar?",
+        opciones: [
+          {
+            texto:
+              "Quiero entender ese plan, aunque implique reconocer áreas rotas o desordenadas que necesitan ser reconstruidas.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Me interesa ese plan principalmente si me ayuda a evitar problemas y a que todo me salga mejor.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Prefiero pensar que con el tiempo las cosas se irán acomodando solas, sin entrar tanto en procesos de restauración.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 8,
+        titulo: "Operación 8 · La Plomada Divina",
+        subtitulo: "Alinea tu vida al diseño original",
+        pregunta:
+          "Cuando se habla de “alinear tu vida al diseño original de Dios”, ¿cómo entiendes ese proceso?",
+        opciones: [
+          {
+            texto:
+              "Como un camino de ajustes continuos donde Dios va corrigiendo mi manera de pensar, decidir y relacionarme.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Como un conjunto de principios que puedo aplicar mientras no me obliguen a cambiar cosas que considero parte de mi personalidad.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Como una idea bonita, pero difícil de aterrizar; cada uno encuentra su propio equilibrio según lo que le funciona.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 9,
+        titulo: "Operación 9 · Raíces",
+        subtitulo: "Ordena pensamientos y emociones",
+        pregunta:
+          "Respecto a tus pensamientos y emociones más profundos, ¿qué te parece más cercano a tu forma de manejarlos?",
+        opciones: [
+          {
+            texto:
+              "Quiero aprender a ordenarlos, identificando qué viene de Dios y qué nace del miedo, la herida o la mentira.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Me interesa dominarlos para que no se noten, de forma que pueda seguir funcionando y cumpliendo con todo.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Prefiero no profundizar demasiado; sentir y pensar así es parte de mí, y cambiarlo podría hacerme perder espontaneidad.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 10,
+        titulo: "Operación 10 · Tallo – Hábitos",
+        subtitulo: "Patrones de vida que sostienen tu identidad",
+        pregunta:
+          "Al hablar de establecer nuevos hábitos que sostengan tu identidad, ¿qué te resuena más?",
+        opciones: [
+          {
+            texto:
+              "Construir hábitos que, aunque requieran disciplina, me acerquen a Dios y refuercen lo que Él dice de mí.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Diseñar hábitos principalmente para ser más productivo y eficiente, y sentir que tengo todo bajo control.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Confiar en que, mientras tenga buena intención, mis hábitos actuales son suficientes y no es necesario cambiarlos mucho.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 11,
+        titulo: "Operación 11 · Propósito",
+        subtitulo: "Descubre el camino preparado para ti",
+        pregunta:
+          "Cuando piensas en el propósito de tu vida, ¿qué enfoque sientes más fuerte?",
+        opciones: [
+          {
+            texto:
+              "Descubrir qué espera Dios de mí y cómo puedo caminar con Él, aunque eso implique renuncias y decisiones difíciles.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Encontrar algo que me haga sentir realizado, visible y con la sensación de que he logrado algo significativo.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Evitar darle demasiada importancia al tema del propósito; es mejor ir viviendo y ver qué oportunidades aparecen.",
+            puntos: 0
+          }
+        ]
+      },
+      {
+        id: 12,
+        titulo: "Operación 12 · El Fruto",
+        subtitulo: "Activa una vida que produce fruto sano",
+        pregunta:
+          "Al pensar en el fruto que quieres dejar en tu vida y en tu familia, ¿qué prioridad se identifica más contigo?",
+        opciones: [
+          {
+            texto:
+              "Que lo que salga de mi vida refleje cada vez más el carácter de Dios y traiga bienestar real a quienes me rodean.",
+            puntos: 3
+          },
+          {
+            texto:
+              "Que se vea que he logrado cosas, que he avanzado y que mi esfuerzo ha dado resultados visibles.",
+            puntos: 2
+          },
+          {
+            texto:
+              "Que las cosas se mantengan estables; mientras no haya grandes problemas, no es tan relevante el tipo de fruto que dé.",
+            puntos: 0
+          }
+        ]
+      }
+    ];
+
+    const niveles = [
+      {
+        min: 32,
+        max: 36,
+        nombre: "Identidad en maduración profunda",
+        descripcion:
+          "Tus respuestas muestran un corazón dispuesto a mirar adentro con honestidad, dejarse confrontar y alinearse con el diseño de Dios. Estás en una etapa donde la identidad se está consolidando y puedes acompañar a otros, incluso mientras sigues siendo procesado."
+      },
+      {
+        min: 25,
+        max: 31,
+        nombre: "Identidad en desarrollo activo",
+        descripcion:
+          "Reconoces la importancia de tu identidad y estás en movimiento hacia la sanidad y la alineación con Dios. Todavía hay áreas donde mezclas control, miedo o autoimagen, pero tu dirección general es de crecimiento. Con acompañamiento y perseverancia, puedes dar pasos clave."
+      },
+      {
+        min: 15,
+        max: 24,
+        nombre: "Identidad mezclada / motivaciones mixtas",
+        descripcion:
+          "Hay deseo de avanzar, pero tus decisiones revelan motivaciones mezcladas: necesidad de aprobación, autoexigencia, temor al dolor o a la confrontación. Es un territorio muy común, pero también un punto decisivo: abrirte a procesos más profundos puede marcar una diferencia enorme."
+      },
+      {
+        min: 0,
+        max: 14,
+        nombre: "Identidad estancada / evitativa",
+        descripcion:
+          "Tus respuestas indican que tiendes a minimizar el peso de lo que pasa en tu interior o a dejar los procesos para después. No es un juicio, sino una fotografía: probablemente has tenido que protegerte y sobrevivir. Dios no te condena, pero sí te invita a despertar y dejar que Él trate con tu historia."
+      }
+    ];
+
+    let indiceActual = 0;
+    let puntajeTotal = 0;
+
+    const cardEl = document.getElementById("card");
+    const counterEl = document.getElementById("question-counter");
+    const progressBarEl = document.getElementById("progress-bar");
+    const scoreIndicatorEl = document.getElementById("score-indicator");
+
+    function actualizarProgreso() {
+      const total = operaciones.length;
+      const actual = Math.min(indiceActual + 1, total);
+      counterEl.textContent = `Pregunta ${actual <= total ? actual : total} de ${total}`;
+      const porcentaje = (indiceActual / total) * 100;
+      progressBarEl.style.width = `${porcentaje}%`;
+      scoreIndicatorEl.textContent = puntajeTotal;
+    }
+
+    function mostrarPregunta() {
+      const total = operaciones.length;
+
+      if (indiceActual >= total) {
+        mostrarResultado();
+        return;
+      }
+
+      const op = operaciones[indiceActual];
+
+      cardEl.classList.remove("fade-in");
+      void cardEl.offsetWidth;
+      cardEl.classList.add("fade-in");
+
+      cardEl.innerHTML = `
+        <div class="operation-title">${op.titulo}</div>
+        <div class="question-text">${op.pregunta}</div>
+        <ul class="options-list">
+          ${op.opciones
+            .map(
+              (opt, index) => `
+            <li class="option" data-index="${index}">
+              <div class="option-indicator">${String.fromCharCode(65 + index)}</div>
+              <div class="option-content">${opt.texto}</div>
+            </li>
+          `
+            )
+            .join("")}
+        </ul>
+        <div class="footer-row">
+          <div class="score-hint">
+            Responde con honestidad. No hay “nota”, solo un mapa de proceso.
+          </div>
+          <button class="primary-button" id="skip-btn" type="button">
+            Saltar esta pregunta
+          </button>
+        </div>
+      `;
+
+      const optionEls = cardEl.querySelectorAll(".option");
+      optionEls.forEach((el) => {
+        el.addEventListener("click", () => manejarSeleccion(el));
+      });
+
+      const skipBtn = document.getElementById("skip-btn");
+      skipBtn.addEventListener("click", () => {
+        indiceActual++;
+        actualizarProgreso();
+        mostrarPregunta();
+      });
+
+      actualizarProgreso();
+    }
+
+    function manejarSeleccion(optionEl) {
+      const index = parseInt(optionEl.getAttribute("data-index"), 10);
+      const op = operaciones[indiceActual];
+      const puntos = op.opciones[index].puntos;
+
+      puntajeTotal += puntos;
+      scoreIndicatorEl.textContent = puntajeTotal;
+
+      const optionEls = cardEl.querySelectorAll(".option");
+      optionEls.forEach((el) => {
+        el.classList.add("disabled");
+        el.classList.remove("selected");
+      });
+      optionEl.classList.add("selected");
+
+      setTimeout(() => {
+        indiceActual++;
+        actualizarProgreso();
+        mostrarPregunta();
+      }, 380);
+    }
+
+    function obtenerNivel(puntos) {
+      return niveles.find((nivel) => puntos >= nivel.min && puntos <= nivel.max);
+    }
+
+    function mostrarResultado() {
+      const maximo = operaciones.length * 3;
+      const nivel = obtenerNivel(puntajeTotal);
+
+      cardEl.classList.remove("fade-in");
+      void cardEl.offsetWidth;
+      cardEl.classList.add("fade-in");
+
+      progressBarEl.style.width = "100%";
+      counterEl.textContent = "Resultado final";
+
+      const nombreNivel = nivel ? nivel.nombre : "Proceso en camino";
+      const descripcionNivel = nivel
+        ? nivel.descripcion
+        : "Tus respuestas muestran un proceso en curso. Dios sigue trabajando en tu historia, y cada paso de honestidad abre espacio para más transformación.";
+
+      cardEl.innerHTML = `
+        <div class="operation-title">Diagnóstico de identidad · Resumen</div>
+        <h2 class="result-title">Esta es la fotografía de tu proceso</h2>
+        <div class="result-level">${nombreNivel}</div>
+        <div class="result-score">
+          Puntaje obtenido: <strong>${puntajeTotal}</strong> de ${maximo} posibles.
+        </div>
+        <p class="result-description">
+          ${descripcionNivel}
+        </p>
+        <div class="pill" style="margin-bottom: 10px;">
+          <span class="pill-dot"></span>
+          Este resultado no es una etiqueta, es un punto de partida.
+        </div>
+        <p class="result-note">
+          Te animo a tomar un tiempo de oración o reflexión con estas preguntas:
+          <br><br>
+          · ¿Qué parte de este diagnóstico siento que más me describe hoy?<br>
+          · ¿Qué área me duele, pero sé que necesito entregar a Dios?<br>
+          · ¿Con quién podría caminar este proceso para no hacerlo solo/a?
+          <br><br>
+          Si estás usando este juego en un taller o discipulado, este resultado puede ser una base para una conversación más profunda, no para juzgar, sino para acompañar.
+        </p>
+        <div class="footer-row" style="margin-top: 18px;">
+          <button class="primary-button" type="button" id="restart-btn">
+            Volver a jugar
+          </button>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">
+            Puedes repetir el recorrido en otro momento y ver cómo cambian tus respuestas.
+          </div>
+        </div>
+      `;
+
+      const restartBtn = document.getElementById("restart-btn");
+      restartBtn.addEventListener("click", () => {
+        indiceActual = 0;
+        puntajeTotal = 0;
+        scoreIndicatorEl.textContent = puntajeTotal;
+        actualizarProgreso();
+        mostrarPregunta();
+      });
+    }
+
+    mostrarPregunta();
+  </script>
+</body>
+</html>

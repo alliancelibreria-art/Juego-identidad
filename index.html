@@ -5,20 +5,20 @@
   <title>Ruta de Identidad - Juego Interactivo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Tipografías elegantes desde Google Fonts -->
+  <!-- Tipografías elegantes -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #0b1120;
+      --bg-raices: radial-gradient(circle at top, #020617 0, #020617 55%, #000000 100%);
+      --bg-restauracion: radial-gradient(circle at top, #312e81 0, #111827 55%, #020617 100%);
+      --bg-fruto: radial-gradient(circle at top, #14532d 0, #052e16 55%, #020617 100%);
+
       --accent: #e0b95b;
       --accent-soft: rgba(224, 185, 91, 0.18);
       --text-main: #f9fafb;
       --text-muted: #9ca3af;
       --border-subtle: rgba(148, 163, 184, 0.35);
-      --error: #f97373;
-      --success: #4ade80;
     }
 
     * {
@@ -29,32 +29,45 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000000 100%);
-      color: var(--text-main);
       font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
+      background: var(--bg-raices);
+      transition: background 0.6s ease;
+    }
+
+    body.etapa-raices {
+      background: var(--bg-raices);
+    }
+
+    body.etapa-restauracion {
+      background: var(--bg-restauracion);
+    }
+
+    body.etapa-fruto {
+      background: var(--bg-fruto);
     }
 
     .app-container {
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
-      background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(15,23,42,1));
+      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,1));
       border-radius: 32px;
-      padding: 32px 26px 28px;
+      padding: 26px 20px 22px;
       box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(148, 163, 184, 0.18);
-      border: 1px solid rgba(148, 163, 184, 0.28);
+        0 30px 80px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(148, 163, 184, 0.24);
+      border: 1px solid rgba(148, 163, 184, 0.3);
       position: relative;
       overflow: hidden;
     }
 
     @media (min-width: 768px) {
       .app-container {
-        padding: 36px 40px 32px;
+        padding: 30px 32px 26px;
       }
     }
 
@@ -63,9 +76,9 @@
       width: 260px;
       height: 260px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(224, 185, 91, 0.22), transparent 60%);
-      top: -80px;
-      right: -40px;
+      background: radial-gradient(circle, rgba(224, 185, 91, 0.28), transparent 60%);
+      top: -90px;
+      right: -60px;
       pointer-events: none;
       filter: blur(1px);
     }
@@ -74,34 +87,34 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-bottom: 24px;
+      gap: 6px;
+      margin-bottom: 18px;
     }
 
-    .title-row {
+    .header-top {
       display: flex;
-      align-items: baseline;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
       flex-wrap: wrap;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .app-title {
       font-family: "Playfair Display", serif;
-      font-size: 1.9rem;
+      font-size: 1.8rem;
       letter-spacing: 0.03em;
-      color: var(--text-main);
-    }
-
-    .app-subtitle {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      max-width: 460px;
     }
 
     .badge {
       background: rgba(15, 23, 42, 0.9);
       border-radius: 999px;
-      padding: 4px 12px;
+      padding: 3px 10px;
       border: 1px solid rgba(148, 163, 184, 0.45);
       font-size: 0.75rem;
       color: var(--accent);
@@ -120,16 +133,51 @@
       box-shadow: 0 0 8px rgba(224, 185, 91, 0.85);
     }
 
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .icon-button {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    }
+
+    .icon-button span:first-child {
+      font-size: 1rem;
+    }
+
+    .icon-button:hover {
+      background: rgba(15, 23, 42, 1);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .app-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-top: 4px;
+    }
+
     .progress-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       gap: 12px;
-    }
-
-    .progress-text {
-      font-size: 0.9rem;
+      font-size: 0.84rem;
       color: var(--text-muted);
     }
 
@@ -149,22 +197,47 @@
       transition: width 0.35s ease;
     }
 
+    .stage-indicator {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+    }
+
+    .score-indicator {
+      font-size: 0.84rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
     .card {
       position: relative;
       border-radius: 24px;
-      padding: 20px 18px 18px;
+      padding: 18px 16px 16px;
       background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.16), rgba(15, 23, 42, 0.96));
       border: 1px solid rgba(148, 163, 184, 0.35);
+      overflow: hidden;
     }
 
     @media (min-width: 768px) {
       .card {
-        padding: 24px 24px 22px;
+        padding: 22px 22px 18px;
       }
     }
 
-    .operation-title {
-      font-size: 0.88rem;
+    .card-title {
+      font-size: 0.86rem;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--accent);
@@ -173,9 +246,19 @@
 
     .question-text {
       font-family: "Playfair Display", serif;
-      font-size: 1.1rem;
-      margin-bottom: 18px;
+      font-size: 1.06rem;
+      margin-bottom: 14px;
       line-height: 1.45;
+    }
+
+    .mini-case {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.7);
     }
 
     .options-list {
@@ -183,7 +266,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .option {
@@ -191,16 +274,17 @@
       border-radius: 16px;
       padding: 12px 14px;
       border: 1px solid var(--border-subtle);
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.78);
       cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
       transition:
         background 0.18s ease,
         border-color 0.18s ease,
         transform 0.12s ease,
         box-shadow 0.18s ease;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
+      transform-style: preserve-3d;
     }
 
     .option.disabled {
@@ -211,15 +295,15 @@
     .option:hover {
       background: rgba(15, 23, 42, 0.98);
       border-color: var(--accent-soft);
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px) perspective(700px) rotateX(2deg);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 1);
     }
 
     .option.selected {
       border-color: var(--accent);
       background: radial-gradient(circle at top left, rgba(224, 185, 91, 0.16), rgba(15, 23, 42, 0.98));
-      box-shadow: 0 0 0 1px rgba(224, 185, 91, 0.18), 0 16px 32px rgba(15, 23, 42, 0.95);
-      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(224, 185, 91, 0.2), 0 16px 32px rgba(15, 23, 42, 1);
+      transform: translateY(-1px) perspective(700px) rotateX(2deg);
     }
 
     .option-indicator {
@@ -243,24 +327,18 @@
     }
 
     .option-content {
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       line-height: 1.4;
-      color: var(--text-main);
     }
 
     .footer-row {
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 14px;
       gap: 12px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
-    }
-
-    .score-hint {
-      font-size: 0.8rem;
-      opacity: 0.8;
     }
 
     .primary-button {
@@ -283,64 +361,70 @@
       transform: translateY(-0.5px);
     }
 
-    .result-title {
-      font-family: "Playfair Display", serif;
-      font-size: 1.5rem;
-      margin-bottom: 6px;
-    }
-
-    .result-level {
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
+    .timer {
+      font-size: 0.86rem;
       color: var(--accent);
-      margin-bottom: 10px;
     }
 
-    .result-score {
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-      color: var(--text-muted);
+    .tree-card {
+      border-radius: 24px;
+      padding: 16px 14px;
+      background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(55, 141, 102, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: space-between;
     }
 
-    .result-description {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .result-note {
+    .tree-title {
       font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: #bbf7d0;
     }
 
-    .pill {
+    .tree-visual {
+      font-size: 2.4rem;
+      text-align: center;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .tree-stage-text {
+      font-size: 0.86rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .tree-description {
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .badge-final {
+      margin-top: 10px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      padding: 4px 10px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
-
-    .total-indicator {
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      padding: 6px 12px;
       font-size: 0.82rem;
-      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .badge-final span:first-child {
+      font-size: 1.1rem;
     }
 
     .fade-in {
       animation: fadeIn 0.3s ease-out;
+    }
+
+    .bounce-once {
+      animation: bounceOnce 0.25s ease-out;
     }
 
     @keyframes fadeIn {
@@ -353,48 +437,171 @@
         transform: translateY(0);
       }
     }
+
+    @keyframes bounceOnce {
+      0% { transform: translateY(0); }
+      35% { transform: translateY(-3px); }
+      70% { transform: translateY(1px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Intro styles */
+    .intro-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .intro-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .field-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .field-input {
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .mode-button {
+      flex: 1;
+      min-width: 120px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    }
+
+    .mode-button:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .mode-button.selected {
+      border-color: var(--accent);
+      background: radial-gradient(circle at top left, rgba(224, 185, 91, 0.18), rgba(15, 23, 42, 1));
+    }
+
+    .mode-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    .mode-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hint-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
   </style>
 </head>
-<body>
+<body class="etapa-raices">
   <div class="app-container">
     <div class="glow-orb"></div>
 
     <div class="header">
-      <div class="title-row">
-        <div>
+      <div class="header-top">
+        <div class="title-block">
           <div class="badge">
             <span class="badge-dot"></span>
             Ruta de identidad
           </div>
           <h1 class="app-title">El Árbol de tu Identidad</h1>
         </div>
+        <div class="controls">
+          <button id="toggle-sound-btn" class="icon-button" type="button">
+            <span>🔊</span><span>Sonidos</span>
+          </button>
+          <button id="toggle-music-btn" class="icon-button" type="button">
+            <span>🎵</span><span>Música</span>
+          </button>
+        </div>
       </div>
-      <p class="app-subtitle">
+      <p class="app-subtitle" id="subtitle-text">
         Recorre doce operaciones que exploran tu identidad, tus raíces, tus muros y tu fruto. Elige con honestidad; las respuestas te mostrarán en qué punto del proceso estás.
       </p>
     </div>
 
     <div class="progress-row">
-      <div class="progress-text">
-        <span id="question-counter">Pregunta 1 de 12</span>
-      </div>
+      <div class="stage-indicator" id="stage-indicator">Etapa: Raíces</div>
       <div class="progress-bar-wrapper">
         <div id="progress-bar" class="progress-bar-fill"></div>
       </div>
-      <div class="total-indicator">
+      <div class="score-indicator">
         Puntos: <span id="score-indicator">0</span>
+        <span id="timer-text" class="timer" style="display:none;"> · 45s</span>
       </div>
     </div>
 
-    <div id="card" class="card fade-in"></div>
+    <div class="layout">
+      <div id="main-card" class="card fade-in">
+        <!-- Contenido dinámico -->
+      </div>
+
+      <div class="tree-card" id="tree-card">
+        <div class="tree-title">Árbol de tu proceso</div>
+        <div class="tree-visual" id="tree-visual">🌱</div>
+        <div class="tree-stage-text" id="tree-stage-text">Semilla · El comienzo de la conciencia</div>
+        <div class="tree-description" id="tree-description">
+          A medida que avanzas, tu árbol pasará de semilla a fruto. Cada decisión es un pequeño gesto de apertura al proceso.
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Sonidos (pon tu propia ruta en src cuando tengas los audios) -->
+  <audio id="click-sound">
+    <!-- <source src="ruta/a/tu/click.mp3" type="audio/mpeg" /> -->
+  </audio>
+  <audio id="bg-music" loop>
+    <!-- <source src="ruta/a/tu/musica-ambiental.mp3" type="audio/mpeg" /> -->
+  </audio>
+
   <script>
+    // =====================
+    // DATOS DEL JUEGO
+    // =====================
     const operaciones = [
       {
         id: 1,
         titulo: "Operación 1 · Árbol de la Vida",
         subtitulo: "Tu identidad define tu fruto",
+        miniCase: "Imagina que alguien se da cuenta de que todo lo que hace está muy enfocado en cómo lo ven los demás.",
         pregunta:
           "Cuando piensas en tu identidad y en el fruto que estás dando hoy, ¿qué sientes que es más importante en este momento?",
         opciones: [
@@ -419,6 +626,7 @@
         id: 2,
         titulo: "Operación 2 · Diagnóstico – Mi Árbol",
         subtitulo: "Evalúa tu condición real",
+        miniCase: null,
         pregunta:
           "Si tuvieras que mirar tu “árbol interior” (tu carácter, tus motivaciones, tus frutos), ¿cómo preferirías hacerlo?",
         opciones: [
@@ -443,6 +651,7 @@
         id: 3,
         titulo: "Operación 3 · La Semilla",
         subtitulo: "Encuentra el origen de quién eres",
+        miniCase: "Piensa en alguien que descubre que su manera de verse a sí mismo viene muy marcada por su historia familiar.",
         pregunta:
           "Al explorar el origen de quién eres, ¿qué enfoque te parece más natural?",
         opciones: [
@@ -467,6 +676,8 @@
         id: 4,
         titulo: "Operación 4 · Contaminantes – Falsos Profetas",
         subtitulo: "Identifica voces que distorsionan tu identidad",
+        miniCase:
+          "Imagina a alguien que recuerda frases que le dijeron de niño y que todavía hoy suenan en su cabeza.",
         pregunta:
           "Al pensar en las voces que han influido en tu identidad (comentarios, modelos, mensajes), ¿cómo prefieres relacionarte con ellas?",
         opciones: [
@@ -491,6 +702,7 @@
         id: 5,
         titulo: "Operación 5 · Muro del Rechazo",
         subtitulo: "Reconoce sus efectos en espíritu, alma y cuerpo",
+        miniCase: null,
         pregunta:
           "Ante las experiencias de rechazo que has vivido, ¿qué actitud describiría mejor cómo sueles manejarlas?",
         opciones: [
@@ -515,6 +727,8 @@
         id: 6,
         titulo: "Operación 6 · Muro de la Rebeldía",
         subtitulo: "Comprende cómo te afecta interiormente",
+        miniCase:
+          "Imagina que alguien siempre se siente atacado cuando le señalan algo que podría mejorar.",
         pregunta:
           "Cuando alguien te confronta o te invita a cambiar algo profundo en tu vida, ¿qué reacción sientes más cercana?",
         opciones: [
@@ -539,6 +753,7 @@
         id: 7,
         titulo: "Operación 7 · Tierra y Agua – La Plomada",
         subtitulo: "Conoce el plan de restauración de Dios",
+        miniCase: null,
         pregunta:
           "Cuando escuchas que Dios tiene un plan de restauración para tu vida, ¿qué enfoque tiendes a tomar?",
         opciones: [
@@ -563,6 +778,8 @@
         id: 8,
         titulo: "Operación 8 · La Plomada Divina",
         subtitulo: "Alinea tu vida al diseño original",
+        miniCase:
+          "Piensa en alguien que empieza a notar que muchas de sus decisiones no reflejan lo que dice creer.",
         pregunta:
           "Cuando se habla de “alinear tu vida al diseño original de Dios”, ¿cómo entiendes ese proceso?",
         opciones: [
@@ -587,6 +804,7 @@
         id: 9,
         titulo: "Operación 9 · Raíces",
         subtitulo: "Ordena pensamientos y emociones",
+        miniCase: null,
         pregunta:
           "Respecto a tus pensamientos y emociones más profundos, ¿qué te parece más cercano a tu forma de manejarlos?",
         opciones: [
@@ -611,6 +829,8 @@
         id: 10,
         titulo: "Operación 10 · Tallo – Hábitos",
         subtitulo: "Patrones de vida que sostienen tu identidad",
+        miniCase:
+          "Imagina a alguien que tiene buenas intenciones, pero sus hábitos diarios no sostienen lo que desea vivir.",
         pregunta:
           "Al hablar de establecer nuevos hábitos que sostengan tu identidad, ¿qué te resuena más?",
         opciones: [
@@ -635,6 +855,7 @@
         id: 11,
         titulo: "Operación 11 · Propósito",
         subtitulo: "Descubre el camino preparado para ti",
+        miniCase: null,
         pregunta:
           "Cuando piensas en el propósito de tu vida, ¿qué enfoque sientes más fuerte?",
         opciones: [
@@ -659,6 +880,8 @@
         id: 12,
         titulo: "Operación 12 · El Fruto",
         subtitulo: "Activa una vida que produce fruto sano",
+        miniCase:
+          "Imagina a alguien que piensa en qué quedará en la vida de su familia cuando él ya no esté.",
         pregunta:
           "Al pensar en el fruto que quieres dejar en tu vida y en tu familia, ¿qué prioridad se identifica más contigo?",
         opciones: [
@@ -686,6 +909,7 @@
         min: 32,
         max: 36,
         nombre: "Identidad en maduración profunda",
+        insignia: { icon: "💛", texto: "Corazón enseñable" },
         descripcion:
           "Tus respuestas muestran un corazón dispuesto a mirar adentro con honestidad, dejarse confrontar y alinearse con el diseño de Dios. Estás en una etapa donde la identidad se está consolidando y puedes acompañar a otros, incluso mientras sigues siendo procesado."
       },
@@ -693,6 +917,7 @@
         min: 25,
         max: 31,
         nombre: "Identidad en desarrollo activo",
+        insignia: { icon: "🌿", texto: "En búsqueda activa" },
         descripcion:
           "Reconoces la importancia de tu identidad y estás en movimiento hacia la sanidad y la alineación con Dios. Todavía hay áreas donde mezclas control, miedo o autoimagen, pero tu dirección general es de crecimiento. Con acompañamiento y perseverancia, puedes dar pasos clave."
       },
@@ -700,6 +925,7 @@
         min: 15,
         max: 24,
         nombre: "Identidad mezclada / motivaciones mixtas",
+        insignia: { icon: "🔥", texto: "En despertar" },
         descripcion:
           "Hay deseo de avanzar, pero tus decisiones revelan motivaciones mezcladas: necesidad de aprobación, autoexigencia, temor al dolor o a la confrontación. Es un territorio muy común, pero también un punto decisivo: abrirte a procesos más profundos puede marcar una diferencia enorme."
       },
@@ -707,60 +933,324 @@
         min: 0,
         max: 14,
         nombre: "Identidad estancada / evitativa",
+        insignia: { icon: "🌘", texto: "En umbral de despertar" },
         descripcion:
           "Tus respuestas indican que tiendes a minimizar el peso de lo que pasa en tu interior o a dejar los procesos para después. No es un juicio, sino una fotografía: probablemente has tenido que protegerte y sobrevivir. Dios no te condena, pero sí te invita a despertar y dejar que Él trate con tu historia."
       }
     ];
 
+    // =====================
+    // ESTADO DEL JUEGO
+    // =====================
+    let estado = "intro"; // "intro" | "juego" | "resultado"
     let indiceActual = 0;
     let puntajeTotal = 0;
+    let nombreJugador = "";
+    let modoReto = false;
+    let timerId = null;
+    let tiempoRestante = 0;
+    let sonidoActivo = true;
+    let musicaActiva = false;
+    let indiceOpcionResaltada = 0;
 
-    const cardEl = document.getElementById("card");
-    const counterEl = document.getElementById("question-counter");
+    // =====================
+    // REFERENCIAS DOM
+    // =====================
+    const mainCardEl = document.getElementById("main-card");
     const progressBarEl = document.getElementById("progress-bar");
     const scoreIndicatorEl = document.getElementById("score-indicator");
+    const stageIndicatorEl = document.getElementById("stage-indicator");
+    const subtitleTextEl = document.getElementById("subtitle-text");
+    const treeVisualEl = document.getElementById("tree-visual");
+    const treeStageTextEl = document.getElementById("tree-stage-text");
+    const treeDescriptionEl = document.getElementById("tree-description");
+    const timerTextEl = document.getElementById("timer-text");
+    const toggleSoundBtn = document.getElementById("toggle-sound-btn");
+    const toggleMusicBtn = document.getElementById("toggle-music-btn");
+    const clickSoundEl = document.getElementById("click-sound");
+    const bgMusicEl = document.getElementById("bg-music");
 
-    function actualizarProgreso() {
+    // =====================
+    // UTILIDADES
+    // =====================
+    function actualizarProgresoVisual() {
       const total = operaciones.length;
-      const actual = Math.min(indiceActual + 1, total);
-      counterEl.textContent = `Pregunta ${actual <= total ? actual : total} de ${total}`;
+      if (estado !== "juego") {
+        progressBarEl.style.width = "0%";
+        return;
+      }
       const porcentaje = (indiceActual / total) * 100;
       progressBarEl.style.width = `${porcentaje}%`;
       scoreIndicatorEl.textContent = puntajeTotal;
     }
 
-    function mostrarPregunta() {
-      const total = operaciones.length;
+    function obtenerEtapaPorIndice(indice) {
+      if (indice <= 3) return "raices";
+      if (indice <= 7) return "restauracion";
+      return "fruto";
+    }
 
-      if (indiceActual >= total) {
+    function actualizarEtapaVisual() {
+      if (estado !== "juego") {
+        document.body.className = "etapa-raices";
+        stageIndicatorEl.textContent = "Etapa: Raíces";
+        return;
+      }
+      const etapa = obtenerEtapaPorIndice(indiceActual);
+      if (etapa === "raices") {
+        document.body.className = "etapa-raices";
+        stageIndicatorEl.textContent = "Etapa: Raíces";
+      } else if (etapa === "restauracion") {
+        document.body.className = "etapa-restauracion";
+        stageIndicatorEl.textContent = "Etapa: Restauración";
+      } else {
+        document.body.className = "etapa-fruto";
+        stageIndicatorEl.textContent = "Etapa: Fruto";
+      }
+    }
+
+    function actualizarArbolVisual() {
+      if (estado !== "juego" && estado !== "resultado") {
+        treeVisualEl.textContent = "🌱";
+        treeStageTextEl.textContent = "Semilla · El comienzo de la conciencia";
+        treeDescriptionEl.textContent =
+          "A medida que avanzas, tu árbol pasará de semilla a fruto. Cada decisión es un pequeño gesto de apertura al proceso.";
+        return;
+      }
+
+      const i = indiceActual;
+      let icon = "🌱";
+      let stageText = "Semilla · El comienzo de la conciencia";
+      let desc =
+        "Una pequeña semilla ha sido plantada: la conciencia de que tu identidad importa y tiene raíces más profundas de lo que pensabas.";
+
+      if (i >= 2 && i <= 4) {
+        icon = "🌿";
+        stageText = "Brote · Algo nuevo está emergiendo";
+        desc =
+          "Empiezan a asomar brotes nuevos: te estás dando cuenta de voces, heridas y patrones que antes pasaban desapercibidos.";
+      }
+      if (i >= 5 && i <= 7) {
+        icon = "🌳";
+        stageText = "Tronco · Estructura en formación";
+        desc =
+          "Tu tronco se fortalece a medida que reconoces muros, rebeldías y la necesidad de restauración en tu historia.";
+      }
+      if (i >= 8 && i <= 10) {
+        icon = "🌳🍃";
+        stageText = "Copa · Vida que se expande";
+        desc =
+          "Las ramas y hojas indican que tu identidad empieza a sostener hábitos, pensamientos y emociones más ordenados.";
+      }
+      if (estado === "resultado" || i >= 11) {
+        icon = "🌳🍎";
+        stageText = "Fruto · Expresión visible de tu proceso";
+        desc =
+          "El fruto habla de una vida que, aun en proceso, empieza a expresar hacia otros lo que Dios ha estado trabajando dentro de ti.";
+      }
+
+      treeVisualEl.textContent = icon;
+      treeStageTextEl.textContent = stageText;
+      treeDescriptionEl.textContent = desc;
+    }
+
+    function reproducirClick() {
+      if (!sonidoActivo) return;
+      if (clickSoundEl && clickSoundEl.play) {
+        clickSoundEl.currentTime = 0;
+        clickSoundEl.play().catch(() => {});
+      }
+    }
+
+    function actualizarMusica() {
+      if (!bgMusicEl) return;
+      if (musicaActiva) {
+        bgMusicEl.play().catch(() => {});
+      } else {
+        bgMusicEl.pause();
+      }
+    }
+
+    function obtenerNivelPorPuntaje(p) {
+      return niveles.find((n) => p >= n.min && p <= n.max) || niveles[niveles.length - 1];
+    }
+
+    // =====================
+    // PANTALLA DE INTRO
+    // =====================
+    function mostrarIntro() {
+      estado = "intro";
+      indiceActual = 0;
+      puntajeTotal = 0;
+      scoreIndicatorEl.textContent = "0";
+      timerTextEl.style.display = "none";
+      subtitleTextEl.textContent =
+        "Este recorrido no es un examen, es una conversación interna con Dios. Responde con honestidad, sin prisa, y deja que el proceso te hable.";
+      actualizarProgresoVisual();
+      actualizarEtapaVisual();
+      actualizarArbolVisual();
+
+      mainCardEl.classList.remove("fade-in");
+      void mainCardEl.offsetWidth;
+      mainCardEl.classList.add("fade-in");
+
+      mainCardEl.innerHTML = `
+        <div class="card-title">Antes de comenzar</div>
+        <div class="intro-title">Prepara tu corazón para la ruta</div>
+        <p class="intro-text">
+          Este juego te llevará por doce operaciones que tocan tu identidad, tus raíces, tus muros y tu fruto. 
+          No hay respuestas “correctas” o “incorrectas”; hay honestidad sobre dónde estás hoy.
+        </p>
+
+        <div class="field-group">
+          <label class="field-label" for="nombre-input">¿Cómo te llamas?</label>
+          <input id="nombre-input" class="field-input" type="text" placeholder="Escribe tu nombre" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Elige cómo quieres vivir esta ruta</div>
+          <div class="mode-buttons">
+            <button type="button" class="mode-button selected" id="modo-tranquilo-btn">
+              <div class="mode-title">Modo tranquilo</div>
+              <div class="mode-desc">Sin límite de tiempo. Ideal para pensar y orar mientras respondes.</div>
+            </button>
+            <button type="button" class="mode-button" id="modo-reto-btn">
+              <div class="mode-title">Modo reto</div>
+              <div class="mode-desc">Cada pregunta tiene tiempo limitado. Te invita a responder sin sobrepensar.</div>
+            </button>
+          </div>
+        </div>
+
+        <p class="hint-text">
+          Puedes usar el mouse o el teclado para responder (1, 2, 3 para las opciones; flechas ↑/↓ para moverte; Enter para confirmar).
+        </p>
+
+        <div class="footer-row" style="margin-top: 14px;">
+          <div class="hint-text">
+            Tómate un momento para respirar y pedirle a Dios que te hable en el proceso.
+          </div>
+          <button class="primary-button" type="button" id="start-btn">
+            Empezar recorrido
+          </button>
+        </div>
+      `;
+
+      const nombreInput = document.getElementById("nombre-input");
+      const modoTranquiloBtn = document.getElementById("modo-tranquilo-btn");
+      const modoRetoBtn = document.getElementById("modo-reto-btn");
+      const startBtn = document.getElementById("start-btn");
+
+      modoTranquiloBtn.addEventListener("click", () => {
+        modoReto = false;
+        modoTranquiloBtn.classList.add("selected");
+        modoRetoBtn.classList.remove("selected");
+      });
+
+      modoRetoBtn.addEventListener("click", () => {
+        modoReto = true;
+        modoRetoBtn.classList.add("selected");
+        modoTranquiloBtn.classList.remove("selected");
+      });
+
+      startBtn.addEventListener("click", () => {
+        const nombre = (nombreInput.value || "").trim();
+        nombreJugador = nombre || "";
+        mostrarPrimeraPregunta();
+      });
+    }
+
+    // =====================
+    // PREGUNTAS
+    // =====================
+    function mostrarPrimeraPregunta() {
+      estado = "juego";
+      indiceActual = 0;
+      puntajeTotal = 0;
+      scoreIndicatorEl.textContent = "0";
+      subtitleTextEl.textContent = nombreJugador
+        ? `${nombreJugador}, responde sin prisa pero con honestidad. Este es un espacio seguro para mirar hacia dentro.`
+        : "Responde sin prisa pero con honestidad. Este es un espacio seguro para mirar hacia dentro.";
+      mostrarPregunta();
+    }
+
+    function iniciarTimer() {
+      limpiarTimer();
+      if (!modoReto) {
+        timerTextEl.style.display = "none";
+        return;
+      }
+      tiempoRestante = 45;
+      timerTextEl.style.display = "inline";
+      timerTextEl.textContent = ` · ${tiempoRestante}s`;
+      timerId = setInterval(() => {
+        tiempoRestante -= 1;
+        if (tiempoRestante < 0) tiempoRestante = 0;
+        timerTextEl.textContent = ` · ${tiempoRestante}s`;
+        if (tiempoRestante <= 0) {
+          limpiarTimer();
+          avanzarPorTiempo();
+        }
+      }, 1000);
+    }
+
+    function limpiarTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function mostrarPregunta() {
+      if (indiceActual >= operaciones.length) {
         mostrarResultado();
         return;
       }
 
       const op = operaciones[indiceActual];
+      estado = "juego";
+      indiceOpcionResaltada = 0;
 
-      cardEl.classList.remove("fade-in");
-      void cardEl.offsetWidth;
-      cardEl.classList.add("fade-in");
+      actualizarProgresoVisual();
+      actualizarEtapaVisual();
+      actualizarArbolVisual();
+      iniciarTimer();
 
-      cardEl.innerHTML = `
-        <div class="operation-title">${op.titulo}</div>
-        <div class="question-text">${op.pregunta}</div>
+      mainCardEl.classList.remove("fade-in");
+      void mainCardEl.offsetWidth;
+      mainCardEl.classList.add("fade-in");
+
+      const saludo = nombreJugador ? `${nombreJugador}, ` : "";
+
+      mainCardEl.innerHTML = `
+        <div class="card-title">${op.titulo}</div>
+        ${
+          op.miniCase
+            ? `<div class="mini-case">${op.miniCase}</div>`
+            : ""
+        }
+        <div class="question-text">${saludo}${op.pregunta}</div>
         <ul class="options-list">
           ${op.opciones
-            .map(
-              (opt, index) => `
-            <li class="option" data-index="${index}">
-              <div class="option-indicator">${String.fromCharCode(65 + index)}</div>
+            .map((opt, index) => {
+              const letra = String.fromCharCode(65 + index);
+              const tooltip =
+                opt.puntos === 3
+                  ? "Esta respuesta refleja apertura y disposición a un proceso profundo."
+                  : opt.puntos === 2
+                  ? "Esta respuesta muestra deseo de avanzar, pero con motivaciones mezcladas."
+                  : "Esta respuesta puede indicar cierta evasión o resistencia al proceso.";
+              return `
+            <li class="option" data-index="${index}" title="${tooltip}">
+              <div class="option-indicator">${letra}</div>
               <div class="option-content">${opt.texto}</div>
             </li>
-          `
-            )
+          `;
+            })
             .join("")}
         </ul>
         <div class="footer-row">
-          <div class="score-hint">
-            Responde con honestidad. No hay “nota”, solo un mapa de proceso.
+          <div class="hint-text">
+            Usa 1, 2 o 3 para elegir; flechas ↑/↓ para moverte; Enter para confirmar.
           </div>
           <button class="primary-button" id="skip-btn" type="button">
             Saltar esta pregunta
@@ -768,78 +1258,105 @@
         </div>
       `;
 
-      const optionEls = cardEl.querySelectorAll(".option");
+      const optionEls = mainCardEl.querySelectorAll(".option");
       optionEls.forEach((el) => {
         el.addEventListener("click", () => manejarSeleccion(el));
       });
 
       const skipBtn = document.getElementById("skip-btn");
       skipBtn.addEventListener("click", () => {
+        limpiarTimer();
         indiceActual++;
-        actualizarProgreso();
         mostrarPregunta();
       });
 
-      actualizarProgreso();
+      resaltarOpcionPorIndice();
+    }
+
+    function resaltarOpcionPorIndice() {
+      const optionEls = mainCardEl.querySelectorAll(".option");
+      optionEls.forEach((el, idx) => {
+        if (idx === indiceOpcionResaltada) {
+          el.classList.add("selected");
+        } else {
+          el.classList.remove("selected");
+        }
+      });
     }
 
     function manejarSeleccion(optionEl) {
+      if (estado !== "juego") return;
+      limpiarTimer();
       const index = parseInt(optionEl.getAttribute("data-index"), 10);
       const op = operaciones[indiceActual];
       const puntos = op.opciones[index].puntos;
 
       puntajeTotal += puntos;
       scoreIndicatorEl.textContent = puntajeTotal;
+      reproducirClick();
 
-      const optionEls = cardEl.querySelectorAll(".option");
+      const optionEls = mainCardEl.querySelectorAll(".option");
       optionEls.forEach((el) => {
         el.classList.add("disabled");
-        el.classList.remove("selected");
       });
-      optionEl.classList.add("selected");
+      optionEl.classList.add("bounce-once");
 
       setTimeout(() => {
         indiceActual++;
-        actualizarProgreso();
         mostrarPregunta();
       }, 380);
     }
 
-    function obtenerNivel(puntos) {
-      return niveles.find((nivel) => puntos >= nivel.min && puntos <= nivel.max);
+    function avanzarPorTiempo() {
+      if (estado !== "juego") return;
+      indiceActual++;
+      mostrarPregunta();
     }
 
+    // =====================
+    // RESULTADO
+    // =====================
     function mostrarResultado() {
+      estado = "resultado";
+      limpiarTimer();
+      actualizarProgresoVisual();
+      actualizarEtapaVisual();
+      actualizarArbolVisual();
+
       const maximo = operaciones.length * 3;
-      const nivel = obtenerNivel(puntajeTotal);
+      const nivel = obtenerNivelPorPuntaje(puntajeTotal);
+      const nombreNivel = nivel.nombre;
+      const descripcionNivel = nivel.descripcion;
+      const insignia = nivel.insignia;
 
-      cardEl.classList.remove("fade-in");
-      void cardEl.offsetWidth;
-      cardEl.classList.add("fade-in");
+      mainCardEl.classList.remove("fade-in");
+      void mainCardEl.offsetWidth;
+      mainCardEl.classList.add("fade-in");
 
-      progressBarEl.style.width = "100%";
-      counterEl.textContent = "Resultado final";
+      document.getElementById("timer-text").style.display = "none";
 
-      const nombreNivel = nivel ? nivel.nombre : "Proceso en camino";
-      const descripcionNivel = nivel
-        ? nivel.descripcion
-        : "Tus respuestas muestran un proceso en curso. Dios sigue trabajando en tu historia, y cada paso de honestidad abre espacio para más transformación.";
-
-      cardEl.innerHTML = `
-        <div class="operation-title">Diagnóstico de identidad · Resumen</div>
-        <h2 class="result-title">Esta es la fotografía de tu proceso</h2>
-        <div class="result-level">${nombreNivel}</div>
-        <div class="result-score">
+      mainCardEl.innerHTML = `
+        <div class="card-title">Diagnóstico de identidad · Resumen</div>
+        <h2 class="intro-title">Esta es la fotografía de tu proceso ${
+          nombreJugador ? `, ${nombreJugador}` : ""
+        }</h2>
+        <div class="result-level" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.14em; color:${'#e0b95b'}; margin-bottom:8px;">
+          ${nombreNivel}
+        </div>
+        <div class="result-score" style="font-size:0.9rem; margin-bottom:10px; color:${'#9ca3af'};">
           Puntaje obtenido: <strong>${puntajeTotal}</strong> de ${maximo} posibles.
         </div>
-        <p class="result-description">
+
+        <div class="badge-final">
+          <span>${insignia.icon}</span>
+          <span>${insignia.texto}</span>
+        </div>
+
+        <p class="result-description" style="margin-top:12px;">
           ${descripcionNivel}
         </p>
-        <div class="pill" style="margin-bottom: 10px;">
-          <span class="pill-dot"></span>
-          Este resultado no es una etiqueta, es un punto de partida.
-        </div>
-        <p class="result-note">
+
+        <p class="result-note" style="margin-top:10px;">
           Te animo a tomar un tiempo de oración o reflexión con estas preguntas:
           <br><br>
           · ¿Qué parte de este diagnóstico siento que más me describe hoy?<br>
@@ -848,11 +1365,12 @@
           <br><br>
           Si estás usando este juego en un taller o discipulado, este resultado puede ser una base para una conversación más profunda, no para juzgar, sino para acompañar.
         </p>
+
         <div class="footer-row" style="margin-top: 18px;">
           <button class="primary-button" type="button" id="restart-btn">
             Volver a jugar
           </button>
-          <div style="font-size: 0.82rem; color: var(--text-muted);">
+          <div style="font-size: 0.8rem; color: #9ca3af;">
             Puedes repetir el recorrido en otro momento y ver cómo cambian tus respuestas.
           </div>
         </div>
@@ -860,15 +1378,58 @@
 
       const restartBtn = document.getElementById("restart-btn");
       restartBtn.addEventListener("click", () => {
-        indiceActual = 0;
-        puntajeTotal = 0;
-        scoreIndicatorEl.textContent = puntajeTotal;
-        actualizarProgreso();
-        mostrarPregunta();
+        mostrarIntro();
       });
     }
 
-    mostrarPregunta();
+    // =====================
+    // SONIDO / MÚSICA
+    // =====================
+    toggleSoundBtn.addEventListener("click", () => {
+      sonidoActivo = !sonidoActivo;
+      toggleSoundBtn.querySelector("span:first-child").textContent = sonidoActivo ? "🔊" : "🔈";
+    });
+
+    toggleMusicBtn.addEventListener("click", () => {
+      musicaActiva = !musicaActiva;
+      toggleMusicBtn.querySelector("span:first-child").textContent = musicaActiva ? "🎵" : "🔇";
+      actualizarMusica();
+    });
+
+    // =====================
+    // TECLADO
+    // =====================
+    document.addEventListener("keydown", (e) => {
+      if (estado !== "juego") return;
+
+      const optionEls = mainCardEl.querySelectorAll(".option");
+      if (!optionEls.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        indiceOpcionResaltada = (indiceOpcionResaltada + 1) % optionEls.length;
+        resaltarOpcionPorIndice();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        indiceOpcionResaltada =
+          (indiceOpcionResaltada - 1 + optionEls.length) % optionEls.length;
+        resaltarOpcionPorIndice();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const el = optionEls[indiceOpcionResaltada];
+        if (el) manejarSeleccion(el);
+      } else if (["1", "2", "3"].includes(e.key)) {
+        e.preventDefault();
+        const idx = parseInt(e.key, 10) - 1;
+        const el = optionEls[idx];
+        if (el) manejarSeleccion(el);
+      }
+    });
+
+    // =====================
+    // INICIO
+    // =====================
+    mostrarIntro();
   </script>
 </body>
 </html>
